@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/JCasinoClient/JCasinoClient.iml" filepath="$PROJECT_DIR$/JCasinoClient/JCasinoClient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JCasinoServer/JCasinoServer.iml" filepath="$PROJECT_DIR$/JCasinoServer/JCasinoServer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JCasinoShared/JCasinoShared.iml" filepath="$PROJECT_DIR$/JCasinoShared/JCasinoShared.iml" />
+    </modules>
+  </component>
+</project>
+
