@@ -38,6 +38,8 @@ public class DBToolkit {
 	*/
 	
 	public void log_addGame(final long startTime) {
+        if (true) // TODO fix
+            return;
 		PreparedStatement stmt = null;
 		try {
 			stmt = db.pstmt("INSERT INTO " + TABLE_PREFIX + "log_games (players, events, winner, winamount, endgame, starttime ) VALUES ('', '', '', 0, '', ?);");
@@ -318,6 +320,9 @@ public class DBToolkit {
 	}
 
 	public void log_addGameEvent(final long startTime, String field, final String data) {
+
+        if (true) // TODO Fix  [SQLITE_ERROR] SQL error or missing database (no such column: events)
+            return;
 
 		// TODO sanitize field? It is not user input but developer might've screwed up something.
 

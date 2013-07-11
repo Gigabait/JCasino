@@ -4,6 +4,7 @@ import com.github.wyozi.jtexas.commonsg.net.RankLevel;
 import com.github.wyozi.jtexas.server.DBToolkit;
 import com.github.wyozi.jtexas.server.MyServerClient;
 import com.github.wyozi.jtexas.server.ServerPacketFactory;
+import com.github.wyozi.jtexas.server.Table;
 import com.github.wyozi.jtexas.server.chiphandler.FreeChipHandler;
 
 import java.io.IOException;
@@ -12,10 +13,15 @@ public class FreeHoldEm extends HoldEmBase {
 	
 	public FreeHoldEm(DBToolkit db) {
 		super(db);
-		this.chipHandler = new FreeChipHandler(1000, table);
 	}
 
-	@Override
+    @Override
+    public void setTable(Table table) {
+        super.setTable(table);
+        this.chipHandler = new FreeChipHandler(1000, table);
+    }
+
+    @Override
 	public void log_addGame(long startTime) {
 		db.log_addGame(startTime);
 	}

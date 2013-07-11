@@ -24,9 +24,8 @@ public abstract class GameBase implements Runnable {
 		this.tablePlayers = new MyServerClient[MAX_PLAYERS_IN_TABLE];
 	}
 	
-	public final void setTable(Table table) {
+	public void setTable(Table table) {
 		this.table = table;
-		// TODO start loop
 	}
 	
 	private volatile boolean running = false;
