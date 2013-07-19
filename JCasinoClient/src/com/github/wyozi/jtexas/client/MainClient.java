@@ -9,21 +9,23 @@ import org.mindrot.jBCrypt.BCrypt;
 import javax.swing.*;
 import java.applet.AppletStub;
 import java.awt.*;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Properties;
 
 public class MainClient extends JApplet implements AppletStub {
 
 	public final static short PROTOCOL_VERSION = 3;
-	// TODO URGENT make card icons reflect new card order on server
-
-	public static final String host = "127.0.0.1";
 
 	private AssetLoader assets;
 
 	//int width;
 	//int height;
+
+    Properties properties;
 
 	Container c;
 
@@ -49,6 +51,23 @@ public class MainClient extends JApplet implements AppletStub {
 			}
 		} catch (Exception ex) {
 		}
+
+        properties = new Properties();
+        try { // First try loading from inside jar
+            properties.load(this.getClass().getClassLoader().getResourceAsStream("config.cfg"));
+        }
+        catch (Exception ignored) {
+            // Try loading from a file in /
+            File f = new File("config.cfg");
+            try {
+                properties.load(new FileReader(f));
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                showError("Couldn't find config file! Searched from " + new File(".").getAbsolutePath());
+                stop();
+                return;
+            }
+        }
 
 		c = getContentPane();
 		gotoLogin();
@@ -87,8 +106,20 @@ public class MainClient extends JApplet implements AppletStub {
 			return;
 		}
 
+        String host = properties.getProperty("ip");
+        int port = 12424;
+        if (host == null) {
+            showError("Missing 'ip' in config file!");
+            return;
+        }
+        if (host.contains(":")) {
+            String[] spl = host.split(":");
+            host = spl[0];
+            port = Integer.parseInt(spl[1]);
+        }
+
 		netHandler = new ClientPacketHandler(this);
-		setNetClient(new NetClient(host, 12424, netHandler));
+		setNetClient(new NetClient(host, port, netHandler));
 		try {
 			getNetClient().connect();
 		} catch (final IOException e) {
@@ -131,11 +162,13 @@ public class MainClient extends JApplet implements AppletStub {
 	public void showError(final String msg) {
 		JOptionPane.showMessageDialog(this, msg, "Error",
 				JOptionPane.ERROR_MESSAGE);
+        System.err.println("Error: " + msg);
 	}
 
 	public void showInfo(final String msg) {
 		JOptionPane.showMessageDialog(this, msg, "Info",
 				JOptionPane.INFORMATION_MESSAGE);
+        System.out.println("Info: " + msg);
 	}
 
 	public void addChatMsg(final String msg, final byte chatLevel) {

@@ -35,13 +35,10 @@ public class LoginPanel extends JPanel implements ActionListener {
         add(pass);
         
         final JButton login = new JButton("Login");
-        final JButton register = new JButton("Register");
         
         login.addActionListener(this);
-        register.addActionListener(this);
         
         add(login);
-        add(register);
         
         this.client = client;
     }
@@ -55,10 +52,6 @@ public class LoginPanel extends JPanel implements ActionListener {
         final JButton src = (JButton) arg0.getSource();
         if (src.getText().equals("Login")) {
             client.startSocket(user.getText(), new String(pass.getPassword()));
-        }
-        else if (src.getText().equals("Register")) {
-            JOptionPane.showMessageDialog(null, "Sorry but no :/");
-            
         }
     }
 }

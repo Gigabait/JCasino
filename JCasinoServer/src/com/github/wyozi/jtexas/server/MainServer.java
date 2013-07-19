@@ -5,8 +5,6 @@ import com.github.wyozi.jtexas.commonsg.net.*;
 import com.github.wyozi.jtexas.commonsg.net.games.HoldEmOpcodes;
 import com.github.wyozi.jtexas.server.db.Database;
 import com.github.wyozi.jtexas.server.db.SqliteDatabase;
-import com.github.wyozi.jtexas.server.games.FreeBlackjack;
-import com.github.wyozi.jtexas.server.games.SlotMachine;
 import com.github.wyozi.jtexas.server.games.holdem.FreeHoldEm;
 import com.github.wyozi.jtexas.server.games.holdem.PaidHoldEm;
 
@@ -89,7 +87,8 @@ public class MainServer implements NetServerListener<MyServerClient> {
             tables.add(feTable);
             feGame.startLoop();
         }
-        
+
+        /* Don't work properly
         {
             SlotMachine smGame = new SlotMachine(toolkit);
             Table smTable = new Table("SlotMachine_Test", smGame, toolkit, 2);
@@ -105,6 +104,7 @@ public class MainServer implements NetServerListener<MyServerClient> {
             tables.add(bjfTable);
             bjfGame.startLoop();
         }
+        */
         
         Log.info("Table loops started");
         

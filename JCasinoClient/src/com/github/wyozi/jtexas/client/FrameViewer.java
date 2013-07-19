@@ -29,6 +29,7 @@ public class FrameViewer {
             public void run() {
                 while (true) {
                     frame.validate();
+                    frame.repaint(); // Bad
                     try {
                         Thread.sleep(20);
                     } catch (final InterruptedException e) {
