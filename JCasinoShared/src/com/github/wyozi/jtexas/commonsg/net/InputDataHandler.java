@@ -5,7 +5,7 @@ import com.github.wyozi.jtexas.commonsg.net.ex.SocketClosedException;
 import java.io.IOException;
 
 public class InputDataHandler {
-    
+
     public void handle(final NetInputStream input, final InputPacketHandler inp) throws SocketClosedException, IOException {
         int opcode;
         try {

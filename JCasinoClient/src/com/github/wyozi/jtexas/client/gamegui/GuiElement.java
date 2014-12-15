@@ -4,6 +4,6 @@ import java.awt.*;
 
 public abstract class GuiElement {
 
-	public abstract void render(Graphics g);
+    public abstract void render(Graphics g);
 
 }

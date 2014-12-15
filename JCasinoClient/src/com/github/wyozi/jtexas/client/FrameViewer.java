@@ -9,20 +9,20 @@ public class FrameViewer {
         final Dimension size = new Dimension(1100, 500);
         frame.setSize(size);
         frame.setMinimumSize(size);
-        
+
         final JApplet applet = new MainClient();
-        
+
         frame.add(applet);
-        
+
         applet.setSize(size);
-        
+
         applet.init();
         applet.start();
-        
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-        
-        
+
+
         new Thread(new Runnable() {
 
             @Override
@@ -37,7 +37,7 @@ public class FrameViewer {
                     }
                 }
             }
-            
+
         }).start();
     }
 

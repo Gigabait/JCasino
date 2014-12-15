@@ -12,46 +12,48 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public abstract class Game implements MouseListener {
-	
-	protected final MainClient client;
-	protected final ArrayList<GuiElement> guiElements = new ArrayList<GuiElement>();
-	
-	public Game(MainClient client) {
-		this.client = client;
-	}
-	
-	public final void render(Graphics g) {
-		this.renderGame(g);
-		for (GuiElement el : guiElements) {
-			el.render(g);
-		}
-	}
-	public abstract void renderGame(Graphics g);
-	public abstract void updateGame(int delta);
-	
-	public abstract void handlePacket(final int opcode, final NetInputStream packet) throws IOException;
-	public abstract ButtonManager getButtonManager();
 
-	@Override
-	public void mouseClicked(MouseEvent arg0) {
-	}
+    protected final MainClient client;
+    protected final ArrayList<GuiElement> guiElements = new ArrayList<GuiElement>();
 
-	@Override
-	public void mouseEntered(MouseEvent arg0) {
-	}
+    public Game(MainClient client) {
+        this.client = client;
+    }
 
-	@Override
-	public void mouseExited(MouseEvent arg0) {
-	}
+    public final void render(Graphics g) {
+        this.renderGame(g);
+        for (GuiElement el : guiElements) {
+            el.render(g);
+        }
+    }
 
-	@Override
-	public void mousePressed(MouseEvent arg0) {
-	}
+    public abstract void renderGame(Graphics g);
 
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-	}
-	
-	
-	
+    public abstract void updateGame(int delta);
+
+    public abstract void handlePacket(final int opcode, final NetInputStream packet) throws IOException;
+
+    public abstract ButtonManager getButtonManager();
+
+    @Override
+    public void mouseClicked(MouseEvent arg0) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent arg0) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent arg0) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent arg0) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent arg0) {
+    }
+
+
 }

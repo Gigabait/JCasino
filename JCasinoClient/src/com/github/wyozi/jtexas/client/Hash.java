@@ -11,17 +11,17 @@ public class Hash {
         }
         return result;
     }
+
     public static String toSHA1(final String string) throws Exception {
         final byte[] convertme = string.getBytes("UTF-8");
-        
+
         MessageDigest md = null;
         try {
             md = MessageDigest.getInstance("SHA-1");
-        }
-        catch(final NoSuchAlgorithmException e) {
+        } catch (final NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        
+
         return byteArrayToHexString(md.digest(convertme));
     }
 }

@@ -29,76 +29,76 @@ import java.util.Iterator;
 
 public class Blackjack extends Game implements ButtonActionListener, Multiplayable {
 
-	ButtonManager bm = new ButtonManager(this);
-	
-	JLabel callAmount = new JLabel("");
-	
+    ButtonManager bm = new ButtonManager(this);
+
+    JLabel callAmount = new JLabel("");
+
     JSlider raiseSlider = new JSlider(0, 0, 0);
     JLabel raiseChips = new JLabel("");
-    
+
     // game vars
-    
+
     ArrayList<Animation> visibleCards = new ArrayList<Animation>();
     boolean attending = false;
-    
+
     int maxIngamePlayers = 0;
     BjOtherPlayer[] tablePlayers;
-    
+
     ClientCard[] board = new ClientCard[5];
     int wholePot = 0;
-    
+
     byte turn = -1;
     boolean myTurn = false;
     int bid = 0;
-    
-    boolean allowRaises = false;
-	
-	public Blackjack(MainClient client) {
-		
-		super(client);
-		
-		bm.addBeforeComponent(callAmount);
-		
-		bm.addButton(HoldEmButton.JoinTable, "Join table", true);
-		bm.addButton(HoldEmButton.LeaveTable, "Leave table", false);
-		bm.addButton(HoldEmButton.ExitTable, "Exit table", true);
-		
-		bm.addButton(HoldEmButton.Check, "Check", false);
-		bm.addButton(HoldEmButton.AllIn, "All-in", false);
-		bm.addButton(HoldEmButton.Fold, "Fold", false);
-		bm.addButton(HoldEmButton.Bet, "Bet", false);
-		
-		raiseSlider.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				raiseChips.setText((bid > 0 ? "raising by " : "betting") + " " + raiseSlider.getValue() + " chips");
-			}
-		});
-		
-		bm.addAfterComponent(raiseSlider);
-		bm.addAfterComponent(raiseChips);
-		
-	}
-	
-	public Point getDeckPos() {
-		Dimension canvasSize = getCanvasSize();
-		return new Point(canvasSize.width/4*3-100, canvasSize.height/2-30);
-	}
-	
-	public Dimension getCanvasSize() {
-		return client.game.getCanvasSize();
-	}
-	
-	@Override
-	public ButtonManager getButtonManager() {
-		return this.bm;
-	}
 
-	@Override
-	public void handlePacket(int opcode, NetInputStream packet)
-			throws IOException {
+    boolean allowRaises = false;
+
+    public Blackjack(MainClient client) {
+
+        super(client);
+
+        bm.addBeforeComponent(callAmount);
+
+        bm.addButton(HoldEmButton.JoinTable, "Join table", true);
+        bm.addButton(HoldEmButton.LeaveTable, "Leave table", false);
+        bm.addButton(HoldEmButton.ExitTable, "Exit table", true);
+
+        bm.addButton(HoldEmButton.Check, "Check", false);
+        bm.addButton(HoldEmButton.AllIn, "All-in", false);
+        bm.addButton(HoldEmButton.Fold, "Fold", false);
+        bm.addButton(HoldEmButton.Bet, "Bet", false);
+
+        raiseSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                raiseChips.setText((bid > 0 ? "raising by " : "betting") + " " + raiseSlider.getValue() + " chips");
+            }
+        });
+
+        bm.addAfterComponent(raiseSlider);
+        bm.addAfterComponent(raiseChips);
+
+    }
+
+    public Point getDeckPos() {
+        Dimension canvasSize = getCanvasSize();
+        return new Point(canvasSize.width / 4 * 3 - 100, canvasSize.height / 2 - 30);
+    }
+
+    public Dimension getCanvasSize() {
+        return client.game.getCanvasSize();
+    }
+
+    @Override
+    public ButtonManager getButtonManager() {
+        return this.bm;
+    }
+
+    @Override
+    public void handlePacket(int opcode, NetInputStream packet)
+            throws IOException {
         /*
-		if (opcode == HoldEmOpcodes.LEAVE_TABLE_SEAT) {
+        if (opcode == HoldEmOpcodes.LEAVE_TABLE_SEAT) {
             setAttending(false);
             updateButtonStatuses();
         }
@@ -220,20 +220,20 @@ public class Blackjack extends Game implements ButtonActionListener, Multiplayab
         	System.out.println("Unidentified packet " + opcode);
         }
         */
-	}
+    }
 
-	private void setAct(byte seat, BlackJackAction action) {
-		BjOtherPlayer player = getSeat(seat);
-		if (player != null) {
-			player.act = action;
-		}
-	}
+    private void setAct(byte seat, BlackJackAction action) {
+        BjOtherPlayer player = getSeat(seat);
+        if (player != null) {
+            player.act = action;
+        }
+    }
 
-	@Override
-	public void renderGame(Graphics g) {
-		
+    @Override
+    public void renderGame(Graphics g) {
+
         final Graphics2D g2 = (Graphics2D) g;
-        
+
         Dimension canvasSize = getCanvasSize();
         /*
         Asset table = client.getAssets().getAsset("pytn");
@@ -247,63 +247,62 @@ public class Blackjack extends Game implements ButtonActionListener, Multiplayab
         g.setColor(Color.black);
         //g.drawOval(25, 25, canvasSize.width-50, canvasSize.height - 50);
         //g.drawImage(table.getImg(), 0, 0, null);
-        
+
         final BufferedImage backImg = client.getAssets().getBack().getImg();
-        
-        for (int i = 0;i < tablePlayers.length; i++) {
-            
+
+        for (int i = 0; i < tablePlayers.length; i++) {
+
             final BjOtherPlayer player = tablePlayers[i];
-            
+
             if (player == null) {
                 continue;
             }
-            
+
             final Point thisGuyLoc = getTableLocation(i, CARD_WX, CARD_HX, canvasSize);
             
             /*
             g.setColor(Color.red);
             g.fillRect(thisGuyLoc.x, thisGuyLoc.y, 5, 5);
             */
-            
+
             if (player.hand != null) {
-                for (int i2 = 0;i2 < player.hand.size(); i2++) {
-                    
+                for (int i2 = 0; i2 < player.hand.size(); i2++) {
+
                     BufferedImage img;
-                    
+
                     Card card = player.hand.get(i2);
-                    
+
                     if (card == null) {
                         img = backImg;
-                    }
-                    else {
+                    } else {
                         img = client.getAssets().getBySR(card.suit, card.rank).getImg();
                     }
-                    
-                    g.drawImage(img,thisGuyLoc.x + i2*20, thisGuyLoc.y, null);
+
+                    g.drawImage(img, thisGuyLoc.x + i2 * 20, thisGuyLoc.y, null);
                 }
             }
-            
+
             final Point dclc = getTableLocation(i, DEALER_CHIP_WX, DEALER_CHIP_HX, canvasSize);
-            
+
             g.setColor(Color.black);
-            g.drawString(player.name + (player.act == null ? "" : " [" + player.act.name() + "]"), dclc.x, dclc.y-10);
-            
+            g.drawString(player.name + (player.act == null ? "" : " [" + player.act.name() + "]"), dclc.x, dclc.y - 10);
+
             if (turn == i) {
                 g.setColor(new Color(255, 0, 0, 180));
-                g.fillRect(dclc.x-10, dclc.y-18, 8, 8);
+                g.fillRect(dclc.x - 10, dclc.y - 18, 8, 8);
             }
-            
+
             if (player.chips > 0) {
-                final Point dcl = new Point(thisGuyLoc.x + 80, thisGuyLoc.y+50);
+                final Point dcl = new Point(thisGuyLoc.x + 80, thisGuyLoc.y + 50);
                 drawChipsAt(g, dcl, player.chips);
             }
-            
+
         }
-        
+
         Point deckPos = getDeckPos();
-        
+
         g2.drawImage(backImg, deckPos.x, deckPos.y, null);
-        
+
         int i = 0;
         for (final ClientCard card : board) {
             if (card == null) {
@@ -312,8 +311,8 @@ public class Blackjack extends Game implements ButtonActionListener, Multiplayab
             final Point p = getBoardLocation(i++);
             g2.drawImage(client.getAssets().getByCard(card).getImg(), p.x, p.y, null);
         }
-            
-        
+
+
         final Iterator<Animation> ait = visibleCards.iterator();
         while (ait.hasNext()) {
             final Animation a = ait.next();
@@ -323,95 +322,90 @@ public class Blackjack extends Game implements ButtonActionListener, Multiplayab
             }
             a.render(g);
         }
-	}
+    }
 
-	@Override
-	public void onPress(AbstractBtnEnum abn, JButton btn) {
+    @Override
+    public void onPress(AbstractBtnEnum abn, JButton btn) {
         try {
-        	NetClient netClient = client.getNetClient();
+            NetClient netClient = client.getNetClient();
             if (abn == HoldEmButton.JoinTable) {
-            	netClient.send(ClientPacketFactory.makeJoinTablePacket());
-            }
-            else if (abn == HoldEmButton.LeaveTable) {
-            	netClient.send(ClientPacketFactory.makeLeaveTableSeatPacket());
-            }
-            else if (abn == HoldEmButton.ExitTable) {
-            	if (attending)
-            		netClient.send(ClientPacketFactory.makeLeaveTableSeatPacket());
-            	netClient.send(ClientPacketFactory.makeSpectateTablePacket(-1));
-            	client.gotoServerList();
-            	netClient.send(ClientPacketFactory.makeRefreshTablesPacket());
-            }
-            else {
-            	HoldEmAction act = ((HoldEmButton) abn).act;
-            	if (btn.getText().equals("Raise")) {
-            		act = HoldEmAction.Raise;
-            	}
-            	else if (btn.getText().equals("Call")) {
-            		act = HoldEmAction.Call;
-            	}
-            	
-            	short bid = (short) raiseSlider.getValue();
-            	if (bid < 0)
-            		bid = 0;
-            		
-            	netClient.send(ClientPacketFactory.makeHoldEmActionPacket(act, bid));
-                 
+                netClient.send(ClientPacketFactory.makeJoinTablePacket());
+            } else if (abn == HoldEmButton.LeaveTable) {
+                netClient.send(ClientPacketFactory.makeLeaveTableSeatPacket());
+            } else if (abn == HoldEmButton.ExitTable) {
+                if (attending)
+                    netClient.send(ClientPacketFactory.makeLeaveTableSeatPacket());
+                netClient.send(ClientPacketFactory.makeSpectateTablePacket(-1));
+                client.gotoServerList();
+                netClient.send(ClientPacketFactory.makeRefreshTablesPacket());
+            } else {
+                HoldEmAction act = ((HoldEmButton) abn).act;
+                if (btn.getText().equals("Raise")) {
+                    act = HoldEmAction.Raise;
+                } else if (btn.getText().equals("Call")) {
+                    act = HoldEmAction.Call;
+                }
+
+                short bid = (short) raiseSlider.getValue();
+                if (bid < 0)
+                    bid = 0;
+
+                netClient.send(ClientPacketFactory.makeHoldEmActionPacket(act, bid));
+
                 myTurn = false; // TODO
                 updateButtonStatuses();
             }
         } catch (final IOException e) {
             e.printStackTrace();
         }
-	}
+    }
 
-	
-	// nonabstract
-	
+
+    // nonabstract
+
     private final static int CARD_WX = 350;
     private final static int CARD_HX = 170;
-    
+
     private final static int DEALER_CHIP_WX = 390;
     private final static int DEALER_CHIP_HX = 210;
-    
+
     public Point getTableLocation(final int i, final int wx, final int hx, Dimension canvasSize) {
-        final double radiansPerPerson = (Math.PI*2)/tablePlayers.length;
-        final Point theMiddle = new Point(canvasSize.width/2, canvasSize.height/2);
-        
-        final double myRadian = radiansPerPerson*i - Math.PI;
-        
-        final int x = theMiddle.x + (int) (Math.cos(myRadian)*wx);
-        final int y = theMiddle.y + (int) (Math.sin(myRadian)*hx);
-        
+        final double radiansPerPerson = (Math.PI * 2) / tablePlayers.length;
+        final Point theMiddle = new Point(canvasSize.width / 2, canvasSize.height / 2);
+
+        final double myRadian = radiansPerPerson * i - Math.PI;
+
+        final int x = theMiddle.x + (int) (Math.cos(myRadian) * wx);
+        final int y = theMiddle.y + (int) (Math.sin(myRadian) * hx);
+
         return new Point(x, y);
     }
-    
+
     public void setSeat(final byte seat, final BjOtherPlayer player) {
         tablePlayers[seat] = player;
     }
-    
+
     public void setAttending(final boolean b) {
         this.attending = b;
     }
-    
+
     public void setMaxIngamePlayers(final byte b) {
         this.maxIngamePlayers = b;
         if (this.tablePlayers != null) {
-        	this.tablePlayers = Arrays.copyOf(this.tablePlayers, b);
-        }
-        else
-        	this.tablePlayers = new BjOtherPlayer[b];
+            this.tablePlayers = Arrays.copyOf(this.tablePlayers, b);
+        } else
+            this.tablePlayers = new BjOtherPlayer[b];
     }
-    
+
     public BjOtherPlayer getSeat(final byte seat) {
         return tablePlayers[seat];
     }
-    
+
     public Point getBoardLocation(final int i) {
-    	Point deckPos = getDeckPos();
-        return new Point(deckPos.x-(150)+(i*20), deckPos.y);
+        Point deckPos = getDeckPos();
+        return new Point(deckPos.x - (150) + (i * 20), deckPos.y);
     }
-    
+
     public void shareCards() {
         
         /*new Thread(new Runnable() {
@@ -443,23 +437,23 @@ public class Blackjack extends Game implements ButtonActionListener, Multiplayab
                 
             }
         }).start();*/
-        
+
     }
-    
+
     public void shareBoardCards(final int startIndex, final ClientCard... cards) {
-        for (int i = 0;i < getMaxIngamePlayers(); i++) {
+        for (int i = 0; i < getMaxIngamePlayers(); i++) {
             final BjOtherPlayer player = getSeat((byte) i);
-            if(player == null) {
+            if (player == null) {
                 continue;
             }
             player.act = null;
         }
-    	new Thread(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                
-                for (int i = startIndex; i < startIndex+cards.length; i++) {
-                    final ClientCard card = cards[i-startIndex];
+
+                for (int i = startIndex; i < startIndex + cards.length; i++) {
+                    final ClientCard card = cards[i - startIndex];
                     final BlackjackBoardAnimation anim = new BlackjackBoardAnimation(getDeckPos(), getBoardLocation(i), client.getAssets().getByCard(card), i, card, Blackjack.this);
                     visibleCards.add(anim);
                     try {
@@ -468,11 +462,11 @@ public class Blackjack extends Game implements ButtonActionListener, Multiplayab
                         e.printStackTrace();
                     }
                 }
-                
+
             }
         }).start();
     }
-    
+
     public int mySeat() {
         int i = 0;
         for (final BjOtherPlayer player : tablePlayers) {
@@ -482,39 +476,39 @@ public class Blackjack extends Game implements ButtonActionListener, Multiplayab
         }
         return -1;
     }
-    
-    final int[] wiggly = new int[] {-1, 2, -2, 1};
-    
+
+    final int[] wiggly = new int[]{-1, 2, -2, 1};
+
     public void drawChipsAt(final Graphics g, final Point where, final int totalChips) {
-        
+
         int blackChips = 0,
-        greenChips = 0,
-        blueChips = 0,
-        redChips = 0,
-        whiteChips = 0;
-        
+                greenChips = 0,
+                blueChips = 0,
+                redChips = 0,
+                whiteChips = 0;
+
         int workWith = totalChips;
-        
+
         blackChips = (int) Math.floor((totalChips / 100));
         workWith -= blackChips * 100;
-        
+
         greenChips = (int) Math.floor(workWith / 25);
         workWith -= greenChips * 25;
-        
+
         blueChips = (int) Math.floor(workWith / 10);
         workWith -= blueChips * 10;
-        
+
         redChips = (int) Math.floor(workWith / 5);
         workWith -= redChips * 5;
-        
+
         whiteChips = workWith;
-        
+
         final Asset blackChip = client.getAssets().getAsset("blackchip");
         final Asset greenChip = client.getAssets().getAsset("greenchip");
         final Asset blueChip = client.getAssets().getAsset("bluechip");
         final Asset redChip = client.getAssets().getAsset("redchip");
         final Asset whiteChip = client.getAssets().getAsset("whitechip");
-        
+
         for (int x = 0; x < 5; x++) {
             int amount = 0;
             Asset asset = null;
@@ -524,7 +518,7 @@ public class Blackjack extends Game implements ButtonActionListener, Multiplayab
             } else if (x == 1) {
                 asset = greenChip;
                 amount = greenChips;
-            } else if (x == 2) {	
+            } else if (x == 2) {
                 asset = blueChip;
                 amount = blueChips;
             } else if (x == 3) {
@@ -534,16 +528,16 @@ public class Blackjack extends Game implements ButtonActionListener, Multiplayab
                 asset = whiteChip;
                 amount = whiteChips;
             }
-            
+
             if (amount == 0) {
                 continue;
             }
-            
-            final int xl = where.x + x*14;
-            
-            for (int i = 0;i < amount; i++) {
-                final int yl = where.y - i*4;
-                g.drawImage(asset.getImg(), (xl+wiggly[i%4]), yl, null);
+
+            final int xl = where.x + x * 14;
+
+            for (int i = 0; i < amount; i++) {
+                final int yl = where.y - i * 4;
+                g.drawImage(asset.getImg(), (xl + wiggly[i % 4]), yl, null);
             }
         }
     }
@@ -551,11 +545,11 @@ public class Blackjack extends Game implements ButtonActionListener, Multiplayab
     public void setBoardCard(final int boardIndex, final ClientCard card) {
         this.board[boardIndex] = card;
     }
-    
+
     public int getMaxIngamePlayers() {
         return this.maxIngamePlayers;
     }
-    
+
     public void boardCleanup() {
         board = new ClientCard[5];
         this.myTurn = false;
@@ -568,7 +562,7 @@ public class Blackjack extends Game implements ButtonActionListener, Multiplayab
     public void setPot(final int pot) {
         this.wholePot = pot;
     }
-    
+
     public void toggleGameBtns(final boolean flagMyTurn) {
         bm.toggleButton(HoldEmButton.Check, flagMyTurn);
         bm.toggleButton(HoldEmButton.Bet, flagMyTurn);
@@ -580,59 +574,55 @@ public class Blackjack extends Game implements ButtonActionListener, Multiplayab
                 raiseSlider.setEnabled(false);
                 bm.toggleButton(HoldEmButton.Check, false);
                 bm.toggleButton(HoldEmButton.Bet, false);
-            }
-            else {
+            } else {
                 raiseSlider.setEnabled(true);
                 raiseSlider.setMinimum(1);
                 if (bid > 0) {
-                    raiseSlider.setMaximum(myChips-bid-2);
-                }
-                else {
-                    raiseSlider.setMaximum(myChips-2);
+                    raiseSlider.setMaximum(myChips - bid - 2);
+                } else {
+                    raiseSlider.setMaximum(myChips - 2);
                 }
                 raiseSlider.setValue(1);
                 raiseChips.setText((bid > 0 ? "raising by " : "betting") + " 1 chips");
             }
-            
+
             bm.toggleButton(HoldEmButton.Bet, allowRaises);
-            
+
             if (bid > myChips) {
                 bm.toggleButton(HoldEmButton.Check, false);
                 bm.toggleButton(HoldEmButton.Bet, false);
                 raiseSlider.setEnabled(false);
             }
-            
+
             callAmount.setText("Amount to pay: " + bid + " chips");
             bm.setText(HoldEmButton.Check, bid > 0 ? "Call" : "Check");
             bm.setText(HoldEmButton.Bet, bid > 0 ? "Raise" : "Bet");
-        }
-        else {
+        } else {
             raiseSlider.setMinimum(0);
             raiseSlider.setMaximum(0);
             raiseSlider.setValue(0);
             raiseChips.setText("");
-            
+
             callAmount.setText("Amount to pay: 0 chips");
         }
     }
-    
+
     public void updateButtonStatuses() {
         if (!attending) {
-        	bm.enableButton(HoldEmButton.JoinTable);
-        	bm.disableButton(HoldEmButton.LeaveTable);
+            bm.enableButton(HoldEmButton.JoinTable);
+            bm.disableButton(HoldEmButton.LeaveTable);
             toggleGameBtns(false);
-        }
-        else {
-        	bm.disableButton(HoldEmButton.JoinTable);
-        	bm.enableButton(HoldEmButton.LeaveTable);
+        } else {
+            bm.disableButton(HoldEmButton.JoinTable);
+            bm.enableButton(HoldEmButton.LeaveTable);
             toggleGameBtns(myTurn);
         }
     }
-    
+
     public static ClientCard getCard(final Card card) {
         return new ClientCard(card.suit, card.rank);// TODO
     }
-    
+
     public void turnChanged(final byte seat, final int bid, final boolean allowRaises) {
         final int mySeat = mySeat();
         this.bid = bid;
@@ -641,17 +631,16 @@ public class Blackjack extends Game implements ButtonActionListener, Multiplayab
             this.myTurn = true;
             this.turn = (byte) mySeat;
             Toolkit.getDefaultToolkit().beep();
-        }
-        else {
+        } else {
             this.turn = seat;
             this.myTurn = false;
         }
         updateButtonStatuses();
     }
 
-	@Override
-	public void updateGame(int delta) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void updateGame(int delta) {
+        // TODO Auto-generated method stub
+
+    }
 }

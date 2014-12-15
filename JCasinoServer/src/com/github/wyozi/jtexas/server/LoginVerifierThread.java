@@ -4,16 +4,16 @@ public class LoginVerifierThread implements Runnable {
 
     private final String user, hash;
     private final LoginVerifiedListener listener;
-    
+
     public LoginVerifierThread(final String user, final String hash, final LoginVerifiedListener listener) {
         this.user = user;
         this.hash = hash;
         this.listener = listener;
     }
-    
+
     @Override
     public void run() {
-        
+
         listener.loginVerified(user, new UserDetails(true));
 
         // TODO plug in your own login verification
@@ -23,6 +23,7 @@ public class LoginVerifierThread implements Runnable {
     }
 
 }
+
 interface LoginVerifiedListener {
     public void loginVerified(String user, UserDetails details);
 }

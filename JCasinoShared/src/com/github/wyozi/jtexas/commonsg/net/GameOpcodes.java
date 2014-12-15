@@ -5,7 +5,7 @@ public interface GameOpcodes {
     public static final int LEAVE_GAME = 0x04;
     public static final int LEAVE_TABLE = 0x06;
     public static final int REFRESH_TABLES = 0x07;
-    
+
     // Server -> Client
     public static final int KICK = 0x30;
     public static final int SUCCESFUL_LOGIN = 0x31;
@@ -13,7 +13,7 @@ public interface GameOpcodes {
     public static final int SEAT_JOINED = 0x33;
     public static final int SEAT_LEFT = 0x34;
     public static final int TABLE_LIST = 0x46;
-    
+
     // Both
     public static final int LOGIN_DETAILS = 0x61;
     public static final int CHAT = 0x62;

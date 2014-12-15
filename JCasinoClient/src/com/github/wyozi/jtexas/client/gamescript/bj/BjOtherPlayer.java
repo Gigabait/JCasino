@@ -9,14 +9,13 @@ import java.util.List;
 
 
 public class BjOtherPlayer extends OtherPlayer {
-    
-	public BjOtherPlayer(String name, int chips) {
-		super(name, chips);
-	}
-	
-	public List<ClientCard> hand = new ArrayList<ClientCard>();
-	public BlackJackAction act;
-	
-	
-    
+
+    public BjOtherPlayer(String name, int chips) {
+        super(name, chips);
+    }
+
+    public List<ClientCard> hand = new ArrayList<ClientCard>();
+    public BlackJackAction act;
+
+
 }

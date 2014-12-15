@@ -3,8 +3,9 @@ package com.github.wyozi.jtexas.commonsg.net;
 import java.io.IOException;
 
 public class FragmentFactory {
-    private FragmentFactory() {}
-    
+    private FragmentFactory() {
+    }
+
     public static PFragment newStringFragment(final String string) {
         return new PFragment() {
             @Override
@@ -18,7 +19,7 @@ public class FragmentFactory {
             }
         };
     }
-    
+
     public static PFragment newByteFragment(final byte b) {
         return new PFragment() {
             @Override
@@ -32,7 +33,7 @@ public class FragmentFactory {
             }
         };
     }
-    
+
     public static PFragment newBooleanFragment(final boolean b) {
         return new PFragment() {
             @Override
@@ -46,7 +47,7 @@ public class FragmentFactory {
             }
         };
     }
-    
+
     public static PFragment newIntFragment(final int i) {
         return new PFragment() {
             @Override

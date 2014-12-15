@@ -11,7 +11,7 @@ public class Hand {
     public Hand(final Card... hand) {
         this.hand = hand;
     }
-    
+
     public boolean contains(final Card card) {
         for (final Card c : hand) {
             if (c == null) {
@@ -22,7 +22,7 @@ public class Hand {
         }
         return false;
     }
-    
+
     public boolean containsRank(final Rank rank) {
         for (final Card c : hand) {
             if (c == null) {
@@ -33,7 +33,7 @@ public class Hand {
         }
         return false;
     }
-    
+
     public boolean containsSuit(final Suit suit) {
         for (final Card c : hand) {
             if (c == null) {
@@ -44,11 +44,11 @@ public class Hand {
         }
         return false;
     }
-    
+
     public void sort(final Comparator<Card> comparator) {
         Arrays.sort(hand, comparator);
     }
-    
+
     public Card[] getCards() {
         return hand;
     }

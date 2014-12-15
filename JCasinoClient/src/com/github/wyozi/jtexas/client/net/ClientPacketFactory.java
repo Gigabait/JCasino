@@ -18,35 +18,41 @@ public class ClientPacketFactory {
         packet.addFragment(FragmentFactory.newShortFragment(MainClient.PROTOCOL_VERSION));
         return packet;
     }
+
     public static Packet makeChatPacket(final String msg) throws IOException {
         final Packet packet = PacketBuilder.newPacket(HoldEmOpcodes.CHAT);
         packet.addFragment(FragmentFactory.newStringFragment(msg));
         return packet;
     }
+
     public static Packet makeLeaveTableSeatPacket() {
         final Packet packet = PacketBuilder.newPacket(HoldEmOpcodes.LEAVE_TABLE_SEAT);
         return packet;
     }
+
     public static Packet makeJoinTablePacket() {
         final Packet packet = PacketBuilder.newPacket(HoldEmOpcodes.JOIN_TABLE);
         return packet;
     }
+
     public static Packet makeHoldEmActionPacket(final HoldEmAction act, final short bid) throws IOException {
         final Packet packet = PacketBuilder.newPacket(HoldEmOpcodes.DO_ACTION);
-        
-            packet.addFragment(FragmentFactory.newByteFragment(act.getId()));
-            packet.addFragment(FragmentFactory.newShortFragment(bid));
+
+        packet.addFragment(FragmentFactory.newByteFragment(act.getId()));
+        packet.addFragment(FragmentFactory.newShortFragment(bid));
 
         return packet;
     }
-	public static Packet makeSpectateTablePacket(int id) throws IOException {
+
+    public static Packet makeSpectateTablePacket(int id) throws IOException {
         final Packet packet = PacketBuilder.newPacket(HoldEmOpcodes.SPECTATE_TABLE);
-        
+
         packet.addFragment(FragmentFactory.newByteFragment((byte) id));
 
         return packet;
-	}
-	public static Packet makeRefreshTablesPacket() {
-		return PacketBuilder.newPacket(HoldEmOpcodes.REFRESH_TABLES);
-	}
+    }
+
+    public static Packet makeRefreshTablesPacket() {
+        return PacketBuilder.newPacket(HoldEmOpcodes.REFRESH_TABLES);
+    }
 }

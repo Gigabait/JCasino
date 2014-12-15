@@ -8,25 +8,25 @@ import java.net.Socket;
 public abstract class NetServerClient implements Runnable {
 
     private final Socket socket;
-    
+
     private final NetInputStream input;
     private final NetOutputStream output;
     private final ServerPacketHandler<? extends NetServerClient> packHandler;
     private final ServerDataHandler dataHandler;
     protected final NetServer<? extends NetServerClient> server;
-    
+
     public NetServerClient(final Socket socket, final ServerPacketHandler<? extends NetServerClient> packetHandler, final NetServer<? extends NetServerClient> server) throws IOException {
         this.socket = socket;
         this.packHandler = packetHandler;
         this.dataHandler = new ServerDataHandler();
         this.server = server;
-        
+
         input = new NetInputStream(socket.getInputStream());
         output = new NetOutputStream(socket.getOutputStream());
-        
+
         new Thread(this).start();
     }
-    
+
     public void send(final Packet packet) throws IOException {
         if (socket.isClosed())
             throw new IOException("Socket closed");
@@ -36,7 +36,7 @@ public abstract class NetServerClient implements Runnable {
     @Override
     public void run() {
         while (socket.isConnected()) {
-            
+
             try {
                 dataHandler.handle(input, packHandler, this);
             } catch (final IOException e) {
@@ -46,22 +46,22 @@ public abstract class NetServerClient implements Runnable {
                 notifyOfDisconnect();
                 break;
             }
-            
+
         }
     }
-    
+
     boolean notifiedAlready = false;
-    
+
     private void notifyOfDisconnect() {
         if (notifiedAlready)
             return;
         notifiedAlready = true;
-        
+
         notifyServerOfDisconnect();
     }
-    
+
     protected abstract void notifyServerOfDisconnect();
-    
+
     public void kick(final String message) throws IOException {
         if (socket.isClosed())
             return;
@@ -73,7 +73,7 @@ public abstract class NetServerClient implements Runnable {
     public Socket getSocket() {
         return this.socket;
     }
-    
+
     public String getIp() {
         return this.getSocket().getInetAddress().getHostAddress();
     }

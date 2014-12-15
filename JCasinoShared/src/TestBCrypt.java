@@ -16,21 +16,21 @@ import org.mindrot.jBCrypt.BCrypt;
 
 /**
  * JUnit unit tests for BCrypt routines
- * 
+ *
  * @author Damien Miller
  * @version 0.2
  */
 public class TestBCrypt {
-	public static void main(String[] args) {
-		// Hash a password for the first time
-		String salt = BCrypt.gensalt();
-		String hashed = BCrypt.hashpw("apassword", salt);
-		System.out.println("passwd " + hashed + " w/ " + salt);
-		// Check that an unencrypted password matches one that has
-		// previously been hashed
-		if (BCrypt.checkpw("apassword", hashed))
-			System.out.println("It matches");
-		else
-			System.out.println("It does not match");
-	}
+    public static void main(String[] args) {
+        // Hash a password for the first time
+        String salt = BCrypt.gensalt();
+        String hashed = BCrypt.hashpw("apassword", salt);
+        System.out.println("passwd " + hashed + " w/ " + salt);
+        // Check that an unencrypted password matches one that has
+        // previously been hashed
+        if (BCrypt.checkpw("apassword", hashed))
+            System.out.println("It matches");
+        else
+            System.out.println("It does not match");
+    }
 }
