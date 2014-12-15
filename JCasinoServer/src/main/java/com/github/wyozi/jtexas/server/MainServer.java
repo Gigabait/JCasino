@@ -4,7 +4,6 @@ import com.esotericsoftware.minlog.Log;
 import com.github.wyozi.jtexas.commons.net.*;
 import com.github.wyozi.jtexas.commons.net.io.NetInputStream;
 import com.github.wyozi.jtexas.commons.util.Filter;
-import com.github.wyozi.jtexas.commonsg.net.*;
 import com.github.wyozi.jtexas.commons.net.games.HoldEmOpcodes;
 import com.github.wyozi.jtexas.server.db.Database;
 import com.github.wyozi.jtexas.server.db.SqliteDatabase;

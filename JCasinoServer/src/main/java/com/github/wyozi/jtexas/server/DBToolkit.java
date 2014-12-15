@@ -4,8 +4,6 @@ import com.esotericsoftware.minlog.Log;
 import com.github.wyozi.jtexas.commons.net.Packet;
 import com.github.wyozi.jtexas.commons.net.RankLevel;
 import com.github.wyozi.jtexas.server.db.Database;
-import net.sf.persism.Command;
-import net.sf.persism.Query;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -18,15 +16,11 @@ public class DBToolkit {
     public static final String TABLE_PREFIX = "jt_";
 
     Database db;
-    Query query;
-    Command command;
     MainServer server;
 
     public DBToolkit(Database db, MainServer server) {
         this.db = db;
         this.server = server;
-        this.query = db.makeQuery();
-        this.command = db.makeCommand();
     }
     /*
 	public GameLogger addNewGame(GameBase game) {

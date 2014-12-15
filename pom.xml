@@ -8,5 +8,12 @@
     <artifactId>JCasino</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>JCasinoShared</module>
+        <module>JCasinoServer</module>
+        <module>JCasinoClient</module>
+    </modules>
 
 </project>
