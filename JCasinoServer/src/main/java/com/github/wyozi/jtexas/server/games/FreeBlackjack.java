@@ -1,7 +1,7 @@
 package com.github.wyozi.jtexas.server.games;
 
 import com.github.wyozi.jtexas.commons.net.RankLevel;
-import com.github.wyozi.jtexas.server.DBToolkit;
+import com.github.wyozi.jtexas.server.db.DatabaseAccess;
 import com.github.wyozi.jtexas.server.MyServerClient;
 import com.github.wyozi.jtexas.server.ServerPacketFactory;
 import com.github.wyozi.jtexas.server.chiphandler.FreeChipHandler;
@@ -9,14 +9,13 @@ import com.github.wyozi.jtexas.server.chiphandler.FreeChipHandler;
 import java.io.IOException;
 
 public class FreeBlackjack extends Blackjack {
-    public FreeBlackjack(DBToolkit db) {
+    public FreeBlackjack(DatabaseAccess db) {
         super(db);
         this.chipHandler = new FreeChipHandler(1000, table);
     }
 
     @Override
     public void log_addGame(long startTime) {
-        db.log_addGame(startTime);
     }
 
     @Override

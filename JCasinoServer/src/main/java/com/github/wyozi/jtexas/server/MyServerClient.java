@@ -7,13 +7,14 @@ import com.github.wyozi.jtexas.commons.net.NetServerClient;
 import com.github.wyozi.jtexas.commons.net.RankLevel;
 import com.github.wyozi.jtexas.commons.net.ServerPacketHandler;
 import com.github.wyozi.jtexas.commons.net.games.HoldEmAction;
+import com.github.wyozi.jtexas.server.auth.AuthenticationResult;
 
 import java.io.IOException;
 import java.net.Socket;
 
 public class MyServerClient extends NetServerClient {
 
-    private UserDetails details = null;
+    private AuthenticationResult details = null;
     private String name;
     private Card[] hand = null;
 
@@ -33,7 +34,7 @@ public class MyServerClient extends NetServerClient {
         return details != null;
     }
 
-    public void setAuthInfo(final UserDetails details, final String name) {
+    public void setAuthInfo(final AuthenticationResult details, final String name) {
         this.details = details;
         this.name = name;
     }
@@ -93,5 +94,4 @@ public class MyServerClient extends NetServerClient {
     protected void notifyServerOfDisconnect() {
         server.disconnectNotify(this);
     }
-
 }

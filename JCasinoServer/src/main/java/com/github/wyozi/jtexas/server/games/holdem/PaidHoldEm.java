@@ -1,6 +1,6 @@
 package com.github.wyozi.jtexas.server.games.holdem;
 
-import com.github.wyozi.jtexas.server.DBToolkit;
+import com.github.wyozi.jtexas.server.db.DatabaseAccess;
 import com.github.wyozi.jtexas.server.MyServerClient;
 import com.github.wyozi.jtexas.server.Table;
 import com.github.wyozi.jtexas.server.chiphandler.PersistentChipHandler;
@@ -8,7 +8,7 @@ import com.github.wyozi.jtexas.server.chiphandler.PersistentChipHandler;
 public class PaidHoldEm extends HoldEmBase {
 
 
-    public PaidHoldEm(DBToolkit db) {
+    public PaidHoldEm(DatabaseAccess db) {
         super(db);
     }
 
@@ -20,7 +20,6 @@ public class PaidHoldEm extends HoldEmBase {
 
     @Override
     public void log_addGame(long startTime) {
-        db.log_addGame(startTime);
     }
 
     @Override

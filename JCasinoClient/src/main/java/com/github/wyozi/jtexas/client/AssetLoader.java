@@ -63,6 +63,7 @@ public class AssetLoader {
     public void loadFromInputstream(final InputStream is) throws MalformedURLException, IOException {
 
         final byte[] getZip = getBytes(is);
+        System.out.println("Read " + getZip.length + " bytes");
         final ByteArrayInputStream bais = new ByteArrayInputStream(getZip);
 
         final ZipInputStream zis = new ZipInputStream(bais);

@@ -12,5 +12,10 @@
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="JCasinoShared" />
+    <orderEntry type="library" name="Maven: com.squareup.dagger:dagger:1.2.2" level="project" />
+    <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
+    <orderEntry type="library" name="Maven: com.squareup.dagger:dagger-compiler:1.2.2" level="project" />
+    <orderEntry type="library" name="Maven: com.squareup:javawriter:2.5.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:15.0" level="project" />
   </component>
 </module>

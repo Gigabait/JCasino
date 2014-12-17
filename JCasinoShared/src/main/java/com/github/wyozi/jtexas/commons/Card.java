@@ -10,9 +10,9 @@ public class Card {
         this.rank = rank;
     }
 
-    public static byte toByte(final Card card) {
+    public byte toByte() {
         return (byte) (
-                Rank.getValue(card.rank) | (Suit.getValue(card.suit) << 5)
+                Rank.getValue(rank) | (Suit.getValue(suit) << 5)
         );
     }
 

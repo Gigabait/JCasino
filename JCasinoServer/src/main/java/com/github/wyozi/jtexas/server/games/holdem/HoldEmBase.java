@@ -8,6 +8,7 @@ import com.github.wyozi.jtexas.commons.net.RankLevel;
 import com.github.wyozi.jtexas.commons.net.games.HoldEmAction;
 import com.github.wyozi.jtexas.server.*;
 import com.github.wyozi.jtexas.server.chiphandler.ChipHandler;
+import com.github.wyozi.jtexas.server.db.DatabaseAccess;
 import com.github.wyozi.jtexas.server.games.GameBase;
 
 import java.io.IOException;
@@ -32,7 +33,7 @@ public abstract class HoldEmBase extends GameBase {
     public final int SMALL_BLIND = 12;
     public final int MIN_CHIPS_TO_JOIN = SMALL_BLIND * 2 + 1;
 
-    public HoldEmBase(DBToolkit db) {
+    public HoldEmBase(DatabaseAccess db) {
         super(db);
     }
 
@@ -42,7 +43,7 @@ public abstract class HoldEmBase extends GameBase {
         if (isInTable(client)) {
             client.send(ServerPacketFactory.makeInfoPacket("You're already in the table"));
         } else if (fs == -1) {
-            client.send(ServerPacketFactory.makeChatPacket("Unfortunately table places are filled already.", RankLevel.Server));
+            client.send(ServerPacketFactory.makeChatPacket("Table is full.", RankLevel.Server));
         } else if (chipHandler.getChipAmount(client) < MIN_CHIPS_TO_JOIN) {
             client.send(ServerPacketFactory.makeInfoPacket("You dont have enough chips to join the table (minimum " + MIN_CHIPS_TO_JOIN + " needed)"));
         } else if (!queueTableAdd.contains(client)) {
@@ -407,14 +408,14 @@ public abstract class HoldEmBase extends GameBase {
                         if (c == null) {
                             break;
                         }
-                        log_addGameEvent(ins.startTime, "endgame", Card.toByte(c) + ">");
+                        log_addGameEvent(ins.startTime, "endgame", c.toByte() + ">");
                     }
                     for (final MyServerClient clientz : clients) {
                         final Card[] hand = clientz.getHand();
                         if (hand == null || hand.length != 2 || hand[0] == null || hand[1] == null) {
                             continue;
                         }
-                        log_addGameEvent(ins.startTime, "endgame", clientz.getName() + ">" + Card.toByte(hand[0]) + ">" + Card.toByte(hand[1]) + "|");
+                        log_addGameEvent(ins.startTime, "endgame", clientz.getName() + ">" + hand[0].toByte() + ">" + hand[1].toByte() + "|");
                     }
                     log_addGameEvent(ins.startTime, "winner", client.getName());
                     log_addGameEvent(ins.startTime, "winamount", ins.pot + "");
@@ -532,7 +533,7 @@ public abstract class HoldEmBase extends GameBase {
                 int s = 0;
                 for (final MyServerClient client : tablePlayers) {
                     if (client != null) {
-                        final Card[] pHand = new Card[]{ins.deck.pickFirst(), ins.deck.pickFirst()};
+                        final Card[] pHand = new Card[]{ins.deck.pop(), ins.deck.pop()};
                         client.setHand(pHand);
                         try {
                             client.send(ServerPacketFactory.makeRevealCardsPacket((byte) s, pHand[0], pHand[1]));
@@ -616,8 +617,8 @@ public abstract class HoldEmBase extends GameBase {
                 final Card[] flop = new Card[3];
 
                 for (int i = 0; i < flop.length; i++) {
-                    ins.deck.pickFirst(); // traditionz of hold em
-                    flop[i] = ins.deck.pickFirst();
+                    ins.deck.pop(); // traditionz of hold em
+                    flop[i] = ins.deck.pop();
                 }
 
                 ins.board[0] = flop[0];
@@ -644,9 +645,9 @@ public abstract class HoldEmBase extends GameBase {
             if (ins.boardCardsRevealed == 3) {
                 ins.boardCardsRevealed = 4;
 
-                ins.deck.pickFirst();
+                ins.deck.pop();
 
-                Card turn = ins.board[3] = ins.deck.pickFirst();
+                Card turn = ins.board[3] = ins.deck.pop();
 
                 try {
                     table.broadcast(ServerPacketFactory.makeRevealTurnPacket(turn));
@@ -668,9 +669,9 @@ public abstract class HoldEmBase extends GameBase {
             if (ins.boardCardsRevealed == 4) {
                 ins.boardCardsRevealed = 5;
 
-                ins.deck.pickFirst();
+                ins.deck.pop();
 
-                Card river = ins.board[4] = ins.deck.pickFirst();
+                Card river = ins.board[4] = ins.deck.pop();
 
                 try {
                     table.broadcast(ServerPacketFactory.makeRevealRiverPacket(river));
@@ -840,14 +841,14 @@ public abstract class HoldEmBase extends GameBase {
                 if (c == null) {
                     break;
                 }
-                log_addGameEvent(ins.startTime, "endgame", Card.toByte(c) + ">");
+                log_addGameEvent(ins.startTime, "endgame", c.toByte() + ">");
             }
             for (final MyServerClient clientz : clients) {
                 final Card[] hand = clientz.getHand();
                 if (hand == null || hand.length != 2 || hand[0] == null || hand[1] == null) {
                     continue;
                 }
-                log_addGameEvent(ins.startTime, "endgame", clientz.getName() + ">" + Card.toByte(hand[0]) + ">" + Card.toByte(hand[1]) + "|");
+                log_addGameEvent(ins.startTime, "endgame", clientz.getName() + ">" + hand[0].toByte() + ">" + hand[1].toByte() + "|");
             }
 
             log_addGameEvent(ins.startTime, "winamount", ins.pot + "");

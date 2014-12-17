@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 import java.util.Properties;
 
@@ -43,13 +44,8 @@ public class MainClient extends JApplet implements AppletStub {
         //height = getSize().height;
 
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception ex) {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ignored) {
         }
 
         properties = new Properties();
@@ -61,8 +57,7 @@ public class MainClient extends JApplet implements AppletStub {
             try {
                 properties.load(new FileReader(f));
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                showError("Couldn't find config file! Searched from " + new File(".").getAbsolutePath());
+                showError(e.getMessage() + " Couldn't find config file! Searched from " + new File(".").getAbsolutePath());
                 stop();
                 return;
             }
@@ -73,11 +68,16 @@ public class MainClient extends JApplet implements AppletStub {
 
         this.assets = new AssetLoader(this);
         new Thread(new Runnable() {
-
             @Override
             public void run() {
                 try {
-                    getAssets().loadFromInputstream(new URL("http://dl.dropbox.com/u/18458187/rdtbeta/assets.zip").openStream());
+                    System.out.println("Loading assets..");
+
+                    URLConnection conn = new URL("http://puu.sh/dw4sU/1800909821.zip").openConnection();
+                    conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+
+                    getAssets().loadFromInputstream(conn.getInputStream());
+                    System.out.println("Assets loaded");
                 } catch (final Exception e) {
                     e.printStackTrace();
                     System.exit(0);

@@ -1,7 +1,7 @@
 package com.github.wyozi.jtexas.server.chiphandler;
 
 import com.github.wyozi.jtexas.commons.net.RankLevel;
-import com.github.wyozi.jtexas.server.DBToolkit;
+import com.github.wyozi.jtexas.server.db.DatabaseAccess;
 import com.github.wyozi.jtexas.server.MyServerClient;
 import com.github.wyozi.jtexas.server.ServerPacketFactory;
 import com.github.wyozi.jtexas.server.Table;
@@ -10,13 +10,13 @@ import java.io.IOException;
 
 public class PersistentChipHandler extends ChipHandler {
 
-    public PersistentChipHandler(DBToolkit db, Table t) {
+    public PersistentChipHandler(DatabaseAccess db, Table t) {
         super();
         this.db = db;
         this.table = t;
     }
 
-    DBToolkit db;
+    DatabaseAccess db;
     Table table;
 
     @Override

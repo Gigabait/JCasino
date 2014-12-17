@@ -2,7 +2,7 @@ package com.github.wyozi.jtexas.server.games;
 
 import com.github.wyozi.jtexas.commons.net.io.NetInputStream;
 import com.github.wyozi.jtexas.commons.net.games.SlotMachineAction;
-import com.github.wyozi.jtexas.server.DBToolkit;
+import com.github.wyozi.jtexas.server.db.DatabaseAccess;
 import com.github.wyozi.jtexas.server.MyServerClient;
 
 import java.io.IOException;
@@ -11,7 +11,7 @@ public class SlotMachine extends GameBase {
 
     MyServerClient player;
 
-    public SlotMachine(DBToolkit db) {
+    public SlotMachine(DatabaseAccess db) {
         super(db);
     }
 

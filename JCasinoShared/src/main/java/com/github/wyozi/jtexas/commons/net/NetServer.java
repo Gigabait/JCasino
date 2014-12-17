@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class NetServer<T extends NetServerClient> implements Runnable {
-
     private final int port;
 
     private ServerSocket socket;
@@ -54,34 +53,24 @@ public class NetServer<T extends NetServerClient> implements Runnable {
         return clients.contains(client);
     }
 
-    public ArrayList<T> getClients(final Filter<T> filter) {
-        final ArrayList<T> ret = new ArrayList<T>();
-        for (final T el : clients) {
-            if (filter.accept(el)) {
-                ret.add(el);
-            }
-        }
-        return ret;
+    public List<T> getClients() {
+        return clients;
     }
 
     @Override
     public void run() {
         while (socket.isBound()) {
-
             try {
                 final Socket newSocket = socket.accept();
 
                 final T newClient = listener.connected(newSocket, packHandler, this);
                 if (newClient != null) {
-                    clients.add(
-                            newClient
-                    );
+                    clients.add(newClient);
                 }
 
             } catch (final IOException e) {
                 e.printStackTrace();
             }
-
         }
     }
 

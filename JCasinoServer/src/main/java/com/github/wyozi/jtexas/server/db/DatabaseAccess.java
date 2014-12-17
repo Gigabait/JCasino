@@ -1,62 +1,28 @@
-package com.github.wyozi.jtexas.server;
+package com.github.wyozi.jtexas.server.db;
 
 import com.esotericsoftware.minlog.Log;
-import com.github.wyozi.jtexas.commons.net.Packet;
 import com.github.wyozi.jtexas.commons.net.RankLevel;
-import com.github.wyozi.jtexas.server.db.Database;
+import com.github.wyozi.jtexas.server.MyServerClient;
+import com.github.wyozi.jtexas.server.ServerPacketFactory;
+import com.github.wyozi.jtexas.server.db.conn.DatabaseConnection;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class DBToolkit {
-
+public class DatabaseAccess {
     public static final String TABLE_PREFIX = "jt_";
 
-    Database db;
-    MainServer server;
+    public static final String TABLE_USERS = TABLE_PREFIX + "users";
 
-    public DBToolkit(Database db, MainServer server) {
-        this.db = db;
-        this.server = server;
-    }
-    /*
-	public GameLogger addNewGame(GameBase game) {
-		GameLogger logger = new GameLogger(query, command, game);
-		command.insert(logger);
-		return logger;
-		
-	}
-	*/
+    DatabaseConnection conn;
 
-    public void log_addGame(final long startTime) {
-        if (true) // TODO fix
-            return;
-        PreparedStatement stmt = null;
-        try {
-            stmt = db.pstmt("INSERT INTO " + TABLE_PREFIX + "log_games (players, events, winner, winamount, endgame, starttime ) VALUES ('', '', '', 0, '', ?);");
-            stmt.setLong(1, startTime);
-            stmt.execute();
-        } catch (final SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (final SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    public void broadcastInTable(Packet packet, MyServerClient client) throws IOException {
-        Table t = server.getTableOf(client);
-        if (t != null) {
-            t.broadcast(packet);
-        }
+    @Inject
+    public DatabaseAccess(DatabaseConnection conn) {
+        this.conn = conn;
     }
 
     public boolean addChips(final MyServerClient client, final int amount, final String logType, int seat) {
@@ -66,7 +32,7 @@ public class DBToolkit {
         }
         PreparedStatement stmt = null;
         try {
-            stmt = db.pstmt("UPDATE " + TABLE_PREFIX + "userdata SET chipamount = chipamount + ? WHERE name = ?;");
+            stmt = conn.prepareStatement("UPDATE " + TABLE_USERS + " SET chipamount = chipamount + ? WHERE name = ?;");
             stmt.setInt(1, amount);
             stmt.setString(2, client.getName());
             final int rs = stmt.executeUpdate();
@@ -92,7 +58,7 @@ public class DBToolkit {
         }
         PreparedStatement stmt = null;
         try {
-            stmt = db.pstmt("UPDATE " + TABLE_PREFIX + "userdata SET chipamount = chipamount - ? WHERE name = ?;");
+            stmt = conn.prepareStatement("UPDATE " + TABLE_USERS + " SET chipamount = chipamount - ? WHERE name = ?;");
             stmt.setInt(1, amount);
             stmt.setString(2, client.getName());
             final int rs = stmt.executeUpdate();
@@ -118,7 +84,7 @@ public class DBToolkit {
         }
         PreparedStatement stmt = null;
         try {
-            stmt = db.pstmt("UPDATE " + TABLE_PREFIX + "bank SET bankchips = bankchips + ? WHERE name = ?;");
+            stmt = conn.prepareStatement("UPDATE " + TABLE_PREFIX + "bank SET bankchips = bankchips + ? WHERE name = ?;");
             stmt.setInt(1, amount);
             stmt.setString(2, client.getName());
             final int rs = stmt.executeUpdate();
@@ -156,7 +122,7 @@ public class DBToolkit {
         }
         PreparedStatement stmt = null;
         try {
-            stmt = db.pstmt("UPDATE " + TABLE_PREFIX + "bank SET bankchips = bankchips - ? WHERE name = ?;");
+            stmt = conn.prepareStatement("UPDATE " + TABLE_PREFIX + "bank SET bankchips = bankchips - ? WHERE name = ?;");
             stmt.setInt(1, amount);
             stmt.setString(2, client.getName());
             final int rs = stmt.executeUpdate();
@@ -223,7 +189,7 @@ public class DBToolkit {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            stmt = db.pstmt("SELECT chipamount FROM " + TABLE_PREFIX + "userdata WHERE name = ?;");
+            stmt = conn.prepareStatement("SELECT chipamount FROM " + TABLE_USERS + " WHERE name = ?;");
             stmt.setString(1, client.getName());
             rs = stmt.executeQuery();
             if (!rs.next())
@@ -247,7 +213,7 @@ public class DBToolkit {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            stmt = db.pstmt("SELECT bankchips FROM " + TABLE_PREFIX + "bank WHERE name = ?;");
+            stmt = conn.prepareStatement("SELECT bankchips FROM " + TABLE_PREFIX + "bank WHERE name = ?;");
             stmt.setString(1, client.getName());
             rs = stmt.executeQuery();
             if (!rs.next())
@@ -272,7 +238,7 @@ public class DBToolkit {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            stmt = db.pstmt("SELECT rank FROM " + TABLE_PREFIX + "userdata WHERE name = ?;");
+            stmt = conn.prepareStatement("SELECT rank FROM " + TABLE_USERS + " WHERE name = ?;");
             stmt.setString(1, client.getName());
             rs = stmt.executeQuery();
             if (!rs.next())
@@ -295,7 +261,7 @@ public class DBToolkit {
     public void logChipEvent(final MyServerClient client, final int amount, final String type) {
         PreparedStatement stmt = null;
         try {
-            stmt = db.pstmt("INSERT INTO " + TABLE_PREFIX + "log_chipevents (name, amount, type) VALUES (?, ?, ?);");
+            stmt = conn.prepareStatement("INSERT INTO " + TABLE_PREFIX + "log_chipevents (name, amount, type) VALUES (?, ?, ?);");
             stmt.setString(1, client.getName());
             stmt.setInt(2, amount);
             stmt.setString(3, type);
@@ -322,7 +288,7 @@ public class DBToolkit {
 
         PreparedStatement stmt = null;
         try {
-            stmt = db.pstmt("UPDATE " + TABLE_PREFIX + "log_games SET " + field + " = CONCAT(" + field + ", ?) WHERE starttime = ?;");
+            stmt = conn.prepareStatement("UPDATE " + TABLE_PREFIX + "log_games SET " + field + " = CONCAT(" + field + ", ?) WHERE starttime = ?;");
             stmt.setString(1, data);
             stmt.setLong(2, startTime);
             stmt.executeUpdate();
@@ -340,13 +306,13 @@ public class DBToolkit {
     }
 
     public void close() throws SQLException {
-        this.db.close();
+        this.conn.close();
     }
 
     public void log_error(final String error, final MyServerClient client) {
         PreparedStatement stmt = null;
         try {
-            stmt = db.pstmt("INSERT INTO " + TABLE_PREFIX + "log_errors (name, time, error) VALUES (?, ?, ?);");
+            stmt = conn.prepareStatement("INSERT INTO " + TABLE_PREFIX + "log_errors (name, time, error) VALUES (?, ?, ?);");
             stmt.setString(1, client.getName());
             stmt.setLong(2, System.currentTimeMillis());
             stmt.setString(3, error);
@@ -365,7 +331,7 @@ public class DBToolkit {
     }
 
     public boolean nameExistsInDb(final String name) throws SQLException {
-        final PreparedStatement stmt = db.pstmt("SELECT * FROM " + TABLE_PREFIX + "userdata WHERE name = ?;");
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + TABLE_USERS + " WHERE name = ?;");
         stmt.setString(1, name);
         ResultSet rs = null;
         try {
@@ -380,16 +346,16 @@ public class DBToolkit {
     public void verifyDbEntry(final String name) throws SQLException {
 
         if (nameExistsInDb(name)) {
-            Log.debug(name + " DOES exist in db");
+            Log.debug(name + " DOES exist in conn");
             return;
         }
 
         PreparedStatement stmt = null;
         try {
-            stmt = db.pstmt("INSERT INTO " + TABLE_PREFIX + "bank (name, bankchips) VALUES (?, 0);");
+            stmt = conn.prepareStatement("INSERT INTO " + TABLE_PREFIX + "bank (name, bankchips) VALUES (?, 0);");
             stmt.setString(1, name);
             stmt.executeUpdate();
-            stmt = db.pstmt("INSERT INTO " + TABLE_PREFIX + "userdata (name, chipamount) VALUES (?, 0);");
+            stmt = conn.prepareStatement("INSERT INTO " + TABLE_PREFIX + "userdata (name, chipamount) VALUES (?, 0);");
             stmt.setString(1, name);
             stmt.executeUpdate();
         } finally {
@@ -397,17 +363,17 @@ public class DBToolkit {
                 stmt.close();
         }
 
-        Log.debug(name + " entry created in db");
+        Log.debug(name + " entry created in conn");
     }
 
     public void createTables() throws SQLException {
         final String[] tableNames = new String[]{
-                "userdata",
-                "log_games",
-                "log_gameevents",
-                "log_chipevents",
-                "log_errors",
-                "bank"};
+                TABLE_USERS,
+                TABLE_PREFIX + "log_games",
+                TABLE_PREFIX + "log_gameevents",
+                TABLE_PREFIX + "log_chipevents",
+                TABLE_PREFIX + "log_errors",
+                TABLE_PREFIX + "bank"};
         final String[] tableFields = new String[]{
                 "name TEXT, password TEXT, chipamount INT, rank INT",
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, gameid TEXT, starttime BIGINT",
@@ -416,9 +382,9 @@ public class DBToolkit {
                 "name TEXT, time BIGINT, error TEXT",
                 "name TEXT, bankchips INT"};
 
-        final Statement stmt = db.old_stmt();
+        final Statement stmt = conn.createStatement();
         for (int i = 0; i < tableNames.length; i++) {
-            String stmts = "CREATE TABLE IF NOT EXISTS " + TABLE_PREFIX + tableNames[i] + "(" + tableFields[i] + ");";
+            String stmts = "CREATE TABLE IF NOT EXISTS " + tableNames[i] + "(" + tableFields[i] + ");";
             stmt.execute(stmts);
         }
 

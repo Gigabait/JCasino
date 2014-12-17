@@ -2,23 +2,21 @@ package com.github.wyozi.jtexas.server.games;
 
 import com.esotericsoftware.minlog.Log;
 import com.github.wyozi.jtexas.commons.net.io.NetInputStream;
-import com.github.wyozi.jtexas.server.DBToolkit;
+import com.github.wyozi.jtexas.server.db.DatabaseAccess;
 import com.github.wyozi.jtexas.server.MyServerClient;
 import com.github.wyozi.jtexas.server.Table;
 
 import java.io.IOException;
 
 public abstract class GameBase implements Runnable {
-
     protected Table table;
-    protected DBToolkit db;
-
+    protected DatabaseAccess db;
 
     public final byte MAX_PLAYERS_IN_TABLE;
 
     protected MyServerClient[] tablePlayers;
 
-    public GameBase(DBToolkit db) {
+    public GameBase(DatabaseAccess db) {
         this.db = db;
         this.MAX_PLAYERS_IN_TABLE = 10;
         this.tablePlayers = new MyServerClient[MAX_PLAYERS_IN_TABLE];
@@ -26,15 +24,6 @@ public abstract class GameBase implements Runnable {
 
     public void setTable(Table table) {
         this.table = table;
-    }
-
-    private volatile boolean running = false;
-
-    public final void startLoop() {
-        if (running)
-            return;
-        running = true;
-        new Thread(this).start();
     }
 
     public abstract void sendWelcomePacket(MyServerClient client) throws IOException;
@@ -58,9 +47,7 @@ public abstract class GameBase implements Runnable {
     public abstract void gameLoop();
 
     public final void run() {
-        while (running) {
-            gameLoop();
-        }
+        gameLoop();
     }
 
     public void debug(String msg) {

@@ -100,28 +100,28 @@ public class ServerPacketFactory {
     public static Packet makeRevealCardsPacket(final byte seat, final Card card1, final Card card2) throws IOException {
         final Packet packet = PacketBuilder.newPacket(HoldEmOpcodes.REVEAL_CARDS);
         packet.addFragment(FragmentFactory.newByteFragment(seat));
-        packet.addFragment(FragmentFactory.newByteFragment(Card.toByte(card1)));
-        packet.addFragment(FragmentFactory.newByteFragment(Card.toByte(card2)));
+        packet.addFragment(FragmentFactory.newByteFragment(card1.toByte()));
+        packet.addFragment(FragmentFactory.newByteFragment(card2.toByte()));
         return packet;
     }
 
     public static Packet makeRevealFlopPacket(final Card card1, final Card card2, final Card card3) throws IOException {
         final Packet packet = PacketBuilder.newPacket(HoldEmOpcodes.REVEAL_FLOP);
-        packet.addFragment(FragmentFactory.newByteFragment(Card.toByte(card1)));
-        packet.addFragment(FragmentFactory.newByteFragment(Card.toByte(card2)));
-        packet.addFragment(FragmentFactory.newByteFragment(Card.toByte(card3)));
+        packet.addFragment(FragmentFactory.newByteFragment(card1.toByte()));
+        packet.addFragment(FragmentFactory.newByteFragment(card2.toByte()));
+        packet.addFragment(FragmentFactory.newByteFragment(card3.toByte()));
         return packet;
     }
 
     public static Packet makeRevealTurnPacket(final Card card1) throws IOException {
         final Packet packet = PacketBuilder.newPacket(HoldEmOpcodes.REVEAL_TURN);
-        packet.addFragment(FragmentFactory.newByteFragment(Card.toByte(card1)));
+        packet.addFragment(FragmentFactory.newByteFragment(card1.toByte()));
         return packet;
     }
 
     public static Packet makeRevealRiverPacket(final Card card1) throws IOException {
         final Packet packet = PacketBuilder.newPacket(HoldEmOpcodes.REVEAL_RIVER);
-        packet.addFragment(FragmentFactory.newByteFragment(Card.toByte(card1)));
+        packet.addFragment(FragmentFactory.newByteFragment(card1.toByte()));
         return packet;
     }
 

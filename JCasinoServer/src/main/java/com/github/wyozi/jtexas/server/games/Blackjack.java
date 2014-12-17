@@ -1,7 +1,7 @@
 package com.github.wyozi.jtexas.server.games;
 
 import com.github.wyozi.jtexas.commons.net.io.NetInputStream;
-import com.github.wyozi.jtexas.server.DBToolkit;
+import com.github.wyozi.jtexas.server.db.DatabaseAccess;
 import com.github.wyozi.jtexas.server.MyServerClient;
 import com.github.wyozi.jtexas.server.ServerPacketFactory;
 import com.github.wyozi.jtexas.server.chiphandler.ChipHandler;
@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public abstract class Blackjack extends GameBase {
 
-    public Blackjack(DBToolkit db) {
+    public Blackjack(DatabaseAccess db) {
         super(db);
     }
 

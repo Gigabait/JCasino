@@ -1,7 +1,7 @@
 package com.github.wyozi.jtexas.server.games.holdem;
 
 import com.github.wyozi.jtexas.commons.net.RankLevel;
-import com.github.wyozi.jtexas.server.DBToolkit;
+import com.github.wyozi.jtexas.server.db.DatabaseAccess;
 import com.github.wyozi.jtexas.server.MyServerClient;
 import com.github.wyozi.jtexas.server.ServerPacketFactory;
 import com.github.wyozi.jtexas.server.Table;
@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class FreeHoldEm extends HoldEmBase {
 
-    public FreeHoldEm(DBToolkit db) {
+    public FreeHoldEm(DatabaseAccess db) {
         super(db);
     }
 
@@ -23,7 +23,6 @@ public class FreeHoldEm extends HoldEmBase {
 
     @Override
     public void log_addGame(long startTime) {
-        db.log_addGame(startTime);
     }
 
     @Override
